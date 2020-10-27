@@ -1,24 +1,34 @@
 #!/bin/bash
 COMMAND=$1
 
-case "$COMMAND" in
-        create ) source .env
-                export PUBSSHKEY
-                ansible-playbook playbooks/configure-project.yaml
-                ;;
-                # ./deploy-helpernode.sh ;;
+docker build . \
+                --build-arg MYUSER=$(id -n -u) \
+                --build-arg MYUSERID=$(id -u) \
+                --build-arg MYGROUP=$(id -n -g) \
+                --build-arg MYGROUPID=$(id -g) \
+                -t infrabuilder
 
-        destroy ) source config.sh
-                docker_run /files/terraform "terraform destroy -auto-approve" \
-                && rm -f deploy-helpernode.sh \
-                && rm -f files/ks.cfg \
-                && rm -f files/vars.yaml \
-                && rm -f kubeadmin-password \
-                && rm -f kubeconfig \
-                && rm -f config.sh \
-                && rm -rf terraform \
-                && rm -f hosts
-                ;;    
+
+function docker_run {
+        # First argument = working directory
+        # Second argument = command to execute in the container
+        docker run --rm -v $(pwd):/files \
+                        --user $(id -u):$(id -g) \
+                        -v ${SSH_AUTH_SOCK}:${SSH_AUTH_SOCK} \
+                        -e SSH_AUTH_SOCK="${SSH_AUTH_SOCK}" \
+                        --env-file .env \
+                        --workdir $1 \
+                        infrabuilder $2
+}
+
+
+case "$COMMAND" in
+        create ) docker_run /files create
+                ;;
+
+        destroy ) docker_run /files destroy
+                ;;
+                
         * ) cat <<EOT
 Usage:
         infra.sh create
