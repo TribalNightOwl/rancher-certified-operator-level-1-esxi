@@ -1,0 +1,27 @@
+vmxfile: /vmfs/volumes/alldisks/rke-controlplane-1/rke-controlplane-1.vmx
+isofile: /vmfs/volumes/alldisks/iso/ubuntu-20.04.1-live-server-amd64.iso
+
+esxi:
+  ipaddr: "192.168.1.200"
+  datastore: alldisks
+
+vm:
+  controlplane1:
+    name: rke-controlplane-1
+    ipaddr: "192.168.1.240"
+    macaddr: "00:50:56:0E:01:00"
+
+dns:
+  domain: "example.com"
+  clusterid: "ocp4"
+  forwarder1: "8.8.8.8"
+  forwarder2: "8.8.4.4"
+
+dhcp:
+  router: "192.168.1.1"
+  bcast: "192.168.1.255"
+  netmask: "255.255.255.0"
+  poolstart: "192.168.1.210"
+  poolend: "192.168.1.230"
+  ipid: "192.168.1.0"
+  netmaskid: "255.255.255.0"

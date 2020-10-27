@@ -1,0 +1,20 @@
+#!/bin/bash
+source .env
+
+ESXI_SERVER={{ esxi.ipaddr }}
+HELPERNODE={{ vm.helpernode.ipaddr }}
+INSTALL_DIR={{ installdir }}
+LOCAL_IP={{ ansible_default_ipv4["address"] }}
+
+docker build  . -t helpernode-builder
+
+function docker_run {
+        # First argument = working directory
+        # Second argument = command to execute in the container
+        docker run --rm -v $(pwd):/files \
+                        -v ${SSH_AUTH_SOCK}:${SSH_AUTH_SOCK} \
+                        -e SSH_AUTH_SOCK="${SSH_AUTH_SOCK}" \
+                        --env-file .env \
+                        --workdir $1 \
+                        helpernode-builder $2
+}

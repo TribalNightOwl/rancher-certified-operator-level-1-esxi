@@ -1,0 +1,55 @@
+---
+- hosts: localhost
+  tasks:
+  - include_vars:
+      file: vars.yaml
+
+  - name: Create a inventory directory
+    file:
+      path: ../inventory
+      state: directory
+      mode: '0755'
+
+  - name: Create hosts file
+    template:
+      src: ../templates/hosts.j2
+      dest: ../inventory/hosts
+
+  - name: Create a terraform directory
+    file:
+      path: ../terraform
+      state: directory
+      mode: '0755'
+  
+  - name: Create terraform main.tf file
+    template:
+      src: ../templates/main.tf.j2
+      dest: ../terraform/main.tf
+
+  - name: Create terraform vars.tf file
+    template:
+      src: ../templates/vars.tf.j2
+      dest: ../terraform/vars.tf
+
+  - name: Create a cloud-init directory
+    file:
+      path: ../cloud-init
+      state: directory
+      mode: '0755'
+
+  - name: Create user-data file
+    template:
+      src: ../templates/user-data.j2
+      dest: ../cloud-init/user-data
+
+  - name: Create meta-data file
+    template:
+      src: ../templates/meta-data.j2
+      dest: ../cloud-init/meta-data
+
+  - name: Add ssh key to user-data file
+    lineinfile:
+      path: ../cloud-init/user-data
+      line: "      - {{ ansible_env.PUBSSHKEY }}"
+      insertafter: 'authorized-keys:'
+      create: yes
