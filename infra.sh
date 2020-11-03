@@ -8,25 +8,33 @@ docker build . \
                 --build-arg MYGROUPID=$(id -g) \
                 -t infrabuilder
 
+function infra_container {
+        EXTRA_OPTIONS=""
+        COMMAND=$1
 
-function docker_run {
-        # First argument = working directory
-        # Second argument = command to execute in the container
+        if [ "$1" = "shell" ]; then
+                EXTRA_OPTIONS="--entrypoint /bin/bash -it"
+                COMMAND=""
+        fi
+
         docker run --rm -v $(pwd):/files \
                         --user $(id -u):$(id -g) \
                         -v ${SSH_AUTH_SOCK}:${SSH_AUTH_SOCK} \
                         -e SSH_AUTH_SOCK="${SSH_AUTH_SOCK}" \
                         --env-file .env \
-                        --workdir $1 \
-                        infrabuilder $2
+                        --workdir /files \
+                        ${EXTRA_OPTIONS} \
+                        infrabuilder ${COMMAND}
 }
 
-
 case "$COMMAND" in
-        create ) docker_run /files create
+        create ) infra_container create
                 ;;
 
-        destroy ) docker_run /files destroy
+        destroy ) infra_container destroy
+                ;;
+
+        shell ) infra_container shell
                 ;;
                 
         * ) cat <<EOT
