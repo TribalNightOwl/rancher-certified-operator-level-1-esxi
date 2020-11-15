@@ -10,10 +10,10 @@ vm:
     name: rke-controlplane-1
     ipaddr: "192.168.1.240"
     macaddr: "00:50:56:0E:01:00"
+    user: rkeuser
 
 dns:
   domain: "example.com"
-  clusterid: "ocp4"
   forwarder1: "8.8.8.8"
   forwarder2: "8.8.4.4"
 
