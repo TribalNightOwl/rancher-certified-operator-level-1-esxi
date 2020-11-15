@@ -1,6 +1,7 @@
 #!/bin/bash
 COMMAND=$1
 CONFIG_FILE=project/vars.yaml
+WEBSERVER_PORT=$(cat ${CONFIG_FILE} | grep webserver_port | cut -d':' -f2 | tr -d '"' | tr -d ' ')
 
 docker build . \
                 --build-arg MYUSER=$(id -n -u) \
@@ -25,7 +26,7 @@ function infra_container {
                         -e SSH_AUTH_SOCK="${SSH_AUTH_SOCK}" \
                         --env-file .env \
                         --workdir /files \
-                        -p 5000:5000 \
+                        -p ${WEBSERVER_PORT}:${WEBSERVER_PORT} \
                         ${EXTRA_OPTIONS} \
                         infrabuilder ${COMMAND}
 }
@@ -37,16 +38,12 @@ function get_webserver_info {
         read -p "Enter IP address of this machine: [${POSSIBLE_IP}]: " SELECTED_IP
         SELECTED_IP=${SELECTED_IP:-${POSSIBLE_IP}}
 
-        read -p "Enter webserver port: [5000]: " WEB_PORT
-        WEB_PORT=${WEB_PORT:-5000}
-
         echo "webserver_ip: \"${SELECTED_IP}\"" >> ${CONFIG_FILE}
-        echo "webserver_port: \"${WEB_PORT}\""  >> ${CONFIG_FILE}
 
 }
 
 function delete_webserver_info {
-        sed -i '/^webserver/d' ${CONFIG_FILE}
+        sed -i '/^webserver_ip/d' ${CONFIG_FILE}
 }
 
 case "$COMMAND" in
