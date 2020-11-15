@@ -18,7 +18,8 @@ function infra_container {
                 COMMAND=""
         fi
 
-        docker run --rm -v $(pwd):/files \
+        docker run --rm -it \
+                        -v $(pwd):/files \
                         --user $(id -u):$(id -g) \
                         -v ${SSH_AUTH_SOCK}:${SSH_AUTH_SOCK} \
                         -e SSH_AUTH_SOCK="${SSH_AUTH_SOCK}" \
