@@ -2,8 +2,6 @@
 - hosts: localhost
   become: no
   tasks:
-  - include_vars:
-      file: vars.yaml
 
   - name: Create a inventory directory
     file:
