@@ -35,7 +35,7 @@ def create():
     config = read_config()
     esxi_server = config['esxi']['ipaddr']
     builder = config['local_ip']
-    
+
     r = ansible_runner.run(private_data_dir='.', playbook='configure-project.yaml')
 
     r = subprocess.run(["terraform", "init"], cwd='/files/terraform')
@@ -53,6 +53,8 @@ def create():
     print('Add the following options and hit <ENTER>')
     print(f'autoinstall ds=nocloud-net;s=http://{builder}:{webserver_port}/')
 
+    pause = input('Press <ENTER> after the VM has been fully installed')
+    r = ansible_runner.run(private_data_dir='.', playbook='resize-filesystem.yaml')
 
 
 @cli.command()
