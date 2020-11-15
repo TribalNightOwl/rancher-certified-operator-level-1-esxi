@@ -52,7 +52,7 @@ def create():
     print('Add the following options and hit <ENTER>')
     print(f'autoinstall ds=nocloud-net;s=http://{webserver_ip}:{webserver_port}/\n')
 
-    pause = input('Press <ENTER> after the VM has been fully installed')
+    pause = input('Press <ENTER> after the VM has been fully installed\n')
     r = ansible_runner.run(private_data_dir='.', playbook='resize-filesystem.yaml')
 
 
