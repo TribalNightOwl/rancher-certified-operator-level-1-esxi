@@ -1,0 +1,14 @@
+---
+- hosts: rke-controlplane-1
+  remote_user: rkeuser
+  become: yes
+  tasks:
+  - include_vars:
+      file: vars.yaml
+
+  - name: Expand the root filesystem to use 100% of free space
+    lvol:
+      lv: ubuntu-lv
+      vg: ubuntu-vg
+      size: +100%FREE
+      resizefs: true
