@@ -48,9 +48,9 @@ def create():
     vmid = subprocess.run(["ssh", "root@" + esxi_server, "vim-cmd vmsvc/getallvms | grep rke-controlplane-1 | cut -f1 -d ' '"], capture_output=True, universal_newlines=True)    
     vmid = str(vmid.stdout).rstrip()
     print(f'http://{esxi_server}/ui/#/console/{vmid}')
-    print('Boot VM and go into advanced boot options by pressing <TAB>')
+    print('\nBoot VM and go into advanced boot options by pressing <TAB>\n')
     print('Add the following options and hit <ENTER>')
-    print(f'autoinstall ds=nocloud-net;s=http://{webserver_ip}:{webserver_port}/')
+    print(f'autoinstall ds=nocloud-net;s=http://{webserver_ip}:{webserver_port}/\n')
 
     pause = input('Press <ENTER> after the VM has been fully installed')
     r = ansible_runner.run(private_data_dir='.', playbook='resize-filesystem.yaml')
