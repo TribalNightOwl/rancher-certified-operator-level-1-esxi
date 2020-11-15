@@ -7,11 +7,13 @@ import shutil
 import subprocess
 import threading
 
+
 def read_config():
     import yaml
     with open('project/vars.yaml', 'r') as f:
         config_file = yaml.load(f, Loader=yaml.FullLoader)
     return config_file
+
 
 def start_webserver(webserver_port):
     import http.server
@@ -21,6 +23,7 @@ def start_webserver(webserver_port):
     with socketserver.TCPServer(("", webserver_port), Handler) as httpd:
         print("serving at port", webserver_port)
         httpd.serve_forever()
+
 
 @click.group()
 def cli():
