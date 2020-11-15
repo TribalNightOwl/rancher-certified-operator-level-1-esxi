@@ -7,8 +7,6 @@ import shutil
 import subprocess
 import threading
 
-webserver_port = 5000
-
 def read_config():
     import yaml
     with open('project/vars.yaml', 'r') as f:
@@ -34,7 +32,8 @@ def create():
     click.echo('Creating Infrastructure')
     config = read_config()
     esxi_server = config['esxi']['ipaddr']
-    builder = config['local_ip']
+    webserver_ip = config['webserver_ip']
+    webserver_port = config['webserver_port']
 
     r = ansible_runner.run(private_data_dir='.', playbook='configure-project.yaml')
 
@@ -51,7 +50,7 @@ def create():
     print(f'http://{esxi_server}/ui/#/console/{vmid}')
     print('Boot VM and go into advanced boot options by pressing <TAB>')
     print('Add the following options and hit <ENTER>')
-    print(f'autoinstall ds=nocloud-net;s=http://{builder}:{webserver_port}/')
+    print(f'autoinstall ds=nocloud-net;s=http://{webserver_ip}:{webserver_port}/')
 
     pause = input('Press <ENTER> after the VM has been fully installed')
     r = ansible_runner.run(private_data_dir='.', playbook='resize-filesystem.yaml')
