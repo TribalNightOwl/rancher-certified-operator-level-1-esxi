@@ -13,7 +13,7 @@ def read_config():
         config_file = yaml.load(f, Loader=yaml.FullLoader)
     return config_file
 
-def start_webserver():
+def start_webserver(webserver_port):
     import http.server
     import functools
     import socketserver
@@ -33,14 +33,14 @@ def create():
     config = read_config()
     esxi_server = config['esxi']['ipaddr']
     webserver_ip = config['webserver_ip']
-    webserver_port = config['webserver_port']
+    webserver_port = int(config['webserver_port'])
 
     r = ansible_runner.run(private_data_dir='.', playbook='configure-project.yaml')
 
     r = subprocess.run(["terraform", "init"], cwd='/files/terraform')
     r = subprocess.run(["terraform", "apply", "-auto-approve"], cwd='/files/terraform')
 
-    webserver = threading.Thread(target=start_webserver)
+    webserver = threading.Thread(target=start_webserver, args=(webserver_port,))
     webserver.start()
 
     r = ansible_runner.run(private_data_dir='.', playbook='attach-iso-to-vm.yaml')
