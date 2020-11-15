@@ -39,8 +39,8 @@ function get_webserver_info {
         read -p "Enter webserver port: [5000]: " WEB_PORT
         WEB_PORT=${WEB_PORT:-5000}
 
-        echo "webserver_ip: ${SELECTED_IP}" >> ${CONFIG_FILE}
-        echo "webserver_port: ${WEB_PORT}"  >> ${CONFIG_FILE}
+        echo "webserver_ip: \"${SELECTED_IP}\"" >> ${CONFIG_FILE}
+        echo "webserver_port: \"${WEB_PORT}\""  >> ${CONFIG_FILE}
 
 }
 
